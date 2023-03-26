@@ -52,10 +52,10 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		<tycho-version>2.7.5</tycho-version>
-		<tycho-extras-version>2.7.5</tycho-extras-version>
+		<tycho-extras-pack200-version>2.7.5</tycho-extras-pack200-version>
 		<tycho.surefire.extra.vmargs/>
 		<aspectj-maven-compiler-version>1.13.1</aspectj-maven-compiler-version>
 
@@ -227,6 +227,25 @@
 					<id>2022-03-releases</id>
 					<layout>p2</layout>
 					<url>https://download.eclipse.org/releases/2022-03/</url>
+				</repository>
+			</repositories>
+		</profile>
+
+		<profile>
+			<id>e426</id>
+			<properties>
+				<platform.version>e426</platform.version>
+				<!--
+					Go to https://download.eclipse.org/equinox/. Either download the corresponding 4.x SDK release archive and
+					identify the weaving hook version, or check the online bundles list for org.eclipse.equinox.weaving.hook_*.
+				-->
+				<weaving.hook.version>1.3.200.v20220720-1916</weaving.hook.version>
+			</properties>
+			<repositories>
+				<repository>
+					<id>2022-12-releases</id>
+					<layout>p2</layout>
+					<url>https://download.eclipse.org/releases/2022-12/</url>
 				</repository>
 			</repositories>
 		</profile>
@@ -507,12 +526,12 @@
 				<plugin>
 					<groupId>org.eclipse.tycho.extras</groupId>
 					<artifactId>tycho-pack200a-plugin</artifactId>
-					<version>${tycho-extras-version}</version>
+					<version>${tycho-extras-pack200-version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho.extras</groupId>
 					<artifactId>tycho-pack200b-plugin</artifactId>
-					<version>${tycho-extras-version}</version>
+					<version>${tycho-extras-pack200-version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.dash.maven</groupId>

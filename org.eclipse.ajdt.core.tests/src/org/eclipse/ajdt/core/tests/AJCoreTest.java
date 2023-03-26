@@ -56,11 +56,11 @@ public class AJCoreTest extends AJDTCoreTestCase {
 						"Demo.java", "SourceMethod" }, //$NON-NLS-1$ //$NON-NLS-2$
 				{ "=TJP Example/src<tjp{GetInfo.aj", "GetInfo.aj", //$NON-NLS-1$ //$NON-NLS-2$
 						"GetInfo.aj", "AJCompilationUnit" }, //$NON-NLS-1$ //$NON-NLS-2$
-				{ "=TJP Example/src<tjp{GetInfo.aj'GetInfo", "GetInfo", //$NON-NLS-1$ //$NON-NLS-2$
+				{ "=TJP Example/src<tjp{GetInfo.aj>GetInfo", "GetInfo", //$NON-NLS-1$ //$NON-NLS-2$
 						"GetInfo.aj", "AspectElement" }, //$NON-NLS-1$ //$NON-NLS-2$
-				{ "=TJP Example/src<tjp{GetInfo.aj'GetInfo~println", //$NON-NLS-1$
+				{ "=TJP Example/src<tjp{GetInfo.aj>GetInfo~println", //$NON-NLS-1$
 						"println", "GetInfo.aj", "SourceMethod" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				{ "=TJP Example/src<tjp{GetInfo.aj'GetInfo&around", //$NON-NLS-1$
+				{ "=TJP Example/src<tjp{GetInfo.aj>GetInfo§around", //$NON-NLS-1$
 						"around", "GetInfo.aj", "AdviceElement" } }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		compareWithHandles(testHandles);
 	}
@@ -88,22 +88,22 @@ public class AJCoreTest extends AJDTCoreTestCase {
 				{ methodHandle, "method-call(void bean.Point.setX(int))", //$NON-NLS-1$
 						"Demo.java", "AJCodeElement" }, //$NON-NLS-1$ //$NON-NLS-2$
 				{
-						"=Bean Example/src<bean{BoundPoint.aj'BoundPoint&around&QPoint;", //$NON-NLS-1$
+						"=Bean Example/src<bean{BoundPoint.aj>BoundPoint§around§QPoint;", //$NON-NLS-1$
 						"around", "BoundPoint.aj", "AdviceElement" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				{
-						"=Bean Example/src<bean{BoundPoint.aj'BoundPoint)Point.hasListeners)QString;", //$NON-NLS-1$
+						"=Bean Example/src<bean{BoundPoint.aj>BoundPoint°Point.hasListeners°QString;", //$NON-NLS-1$
 						"Point.hasListeners", "BoundPoint.aj", //$NON-NLS-1$ //$NON-NLS-2$
 						"MethodIntertypeElement" }, //$NON-NLS-1$
 				{
-						"=Bean Example/src<bean{BoundPoint.aj'BoundPoint,Point.support", //$NON-NLS-1$
+						"=Bean Example/src<bean{BoundPoint.aj>BoundPoint,Point.support", //$NON-NLS-1$
 						"Point.support", "BoundPoint.aj", //$NON-NLS-1$ //$NON-NLS-2$
 						"FieldIntertypeElement" }, //$NON-NLS-1$
 				{
-						"=Bean Example/src<bean{BoundPoint.aj'BoundPoint`declare parents", //$NON-NLS-1$
+						"=Bean Example/src<bean{BoundPoint.aj>BoundPoint´declare parents", //$NON-NLS-1$
 						"declare parents", "BoundPoint.aj", //$NON-NLS-1$ //$NON-NLS-2$
 						"DeclareElement" }, //$NON-NLS-1$
 				{
-						"=Bean Example/src<bean{BoundPoint.aj'BoundPoint`declare parents!2", //$NON-NLS-1$
+						"=Bean Example/src<bean{BoundPoint.aj>BoundPoint´declare parents!2", //$NON-NLS-1$
 						"declare parents", "BoundPoint.aj", //$NON-NLS-1$ //$NON-NLS-2$
 						"DeclareElement" } //$NON-NLS-1$
 
@@ -129,7 +129,7 @@ public class AJCoreTest extends AJDTCoreTestCase {
 		// note that the elements referred to by the handles need to exist
 		// in the workspace
 		String[][] testHandles = { {
-				"=Spacewar Example/src<spacewar{Ship.aj[Ship\"helmCommandsCut\"QShip;", "helmCommandsCut", //$NON-NLS-1$ //$NON-NLS-2$
+				"=Spacewar Example/src<spacewar{Ship.aj[Ship©helmCommandsCut©QShip;", "helmCommandsCut", //$NON-NLS-1$ //$NON-NLS-2$
 				"Ship.aj", "PointcutElement" }, //$NON-NLS-1$ //$NON-NLS-2$
 		};
 		compareWithHandles(testHandles);
@@ -235,6 +235,27 @@ public class AJCoreTest extends AJDTCoreTestCase {
 		compareElementsFromRelationships(rels, project);
 	}
 
+	/**
+	 * Clone of testHandleCreateRoundtripBug94107() with .classpath file modified to reflect the additional attributes
+	 * M2E in more recent versions (Eclipse 2022-12) create during would import ('module' and 'maven.pomderived'),
+	 * i.e. something like:
+	 * <pre>{@code
+	 * <classpathentry kind="src" output="bin" path="src">
+	 *   <attributes>
+	 *     <attribute name="module" value="true"/>
+	 *     <attribute name="maven.pomderived" value="true"/>
+	 *     </attributes>
+	 * </classpathentry>
+	 * }</pre>
+	 *
+	 * @throws Exception
+	 */
+	public void testHandleCreateRoundtripBugGH223() throws Exception {
+		IProject project = createPredefinedProject("github-223"); //$NON-NLS-1$
+		AJRelationshipType[] rels = new AJRelationshipType[] { AJRelationshipManager.ADVISED_BY };
+		compareElementsFromRelationships(rels, project);
+	}
+
 	private static String getSimpleClassName(IJavaElement obj) {
 		String longName = obj.getClass().getName();
 		int index = longName.lastIndexOf('.');
@@ -257,7 +278,7 @@ public class AJCoreTest extends AJDTCoreTestCase {
 			fail("No relationships found for project " + project.getName()); //$NON-NLS-1$
 		}
     for (IRelationship rel : allRels) {
-      HandleTestUtils.checkAJHandle(rel.getSourceHandle(), model);
+        HandleTestUtils.checkAJHandle(rel.getSourceHandle(), model);
       for (String handle : rel.getTargets()) {
         HandleTestUtils.checkAJHandle(handle, model);
       }
@@ -267,9 +288,9 @@ public class AJCoreTest extends AJDTCoreTestCase {
 	private void compareWithHandles(String[][] testHandles) {
     for (String[] testHandle : testHandles) {
       IJavaElement el = AspectJCore.create(testHandle[0]);
-      assertEquals(
-        "Handle identifier of created element doesn't match original", //$NON-NLS-1$
-        testHandle[0], el.getHandleIdentifier());
+        assertEquals(
+          "Handle identifier of created element doesn't match original", //$NON-NLS-1$
+          testHandle[0], el.getHandleIdentifier());
       assertEquals("Name of created element doesn't match expected", //$NON-NLS-1$
         testHandle[1], el.getElementName());
       assertEquals(
